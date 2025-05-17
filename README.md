@@ -23,38 +23,7 @@ Prije prvog pokretanja potrebno je ručno kreirati i inicijalizirati obje datote
 
 gcc main.c -o program -lm
 
-## Signali i njihova funkcija
 
-Program reagira na sljedeće signale:
-
-### SIGUSR1
-
-- Na ovaj signal program ispisuje trenutni broj koji obrađuje (npr. broj čiji kvadrat računa).  
-- Možete poslati signal ovako:  
-  ```bash
-  kill -SIGUSR1 <pid_programa>
-
- ### SIGTERM
-
-Ovaj signal služi za uredno zaustavljanje programa. Program tada:
-
-1. Otvara datoteku `status.txt` i upisuje zadnji obrađeni broj, umjesto 0 koji označava da je program bio u toku obrade.
-
-2. Zatim završava rad, osiguravajući da se status pravilno sačuva i može se nastaviti sljedeći put.
-
-Signal se šalje komandom:
-
-```bash
-kill -SIGTERM <pid_programa>
-
-### SIGINT (Ctrl+C)
-
-Na ovaj signal program prekida rad bez promene u `status.txt`. To znači da:
-
-1. U `status.txt` ostaje 0, što označava da je prethodni rad prekinut nenajavljeno.
-
-2. Pri sledećem pokretanju program analizira sadržaj `obrada.txt` da bi odredio odakle da nastavi sa radom.
-
-Signal se šalje pritiskom na **Ctrl+C** u terminalu gde je program pokrenut.
+ 
 
 

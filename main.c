@@ -35,7 +35,7 @@ int zadnji_broj_obrada() {
     if (obrada_file == NULL) {
         return 0;
     }
-    int zadnji = 0, 
+    int zadnji = 0;
     int broj;
     while (fscanf(obrada_file, "%d", &broj) != EOF) {
         zadnji = broj;

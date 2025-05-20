@@ -55,11 +55,13 @@ int main() {
         fscanf(status_file, "%d", &status);
         fclose(status_file);
     }
-
+    int zadnji = zadnji_broj_obrada();
     if (status > 0) {
-        trenutni_broj = status + 1;
+        if(zadnji == status * status) {
+            trenutni_broj = status + 1;
+        } else {
+            trenutni_broj = status;
     } else {
-        int zadnji = zadnji_broj_obrada();
         trenutni_broj = (int)sqrt(zadnji) + 1;
     }
 

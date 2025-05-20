@@ -57,7 +57,7 @@ int main() {
     }
 
     if (status > 0) {
-        trenutni_broj = status;
+        trenutni_broj = status + 1;
     } else {
         int zadnji = zadnji_broj_obrada();
         trenutni_broj = (int)sqrt(zadnji) + 1;

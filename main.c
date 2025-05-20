@@ -4,29 +4,29 @@
 #include <unistd.h>
 #include <math.h>
 
-#define OBRADA_FILE "obrada.txt"
-#define STATUS_FILE "status.txt"
+#define OBRADA_DAT "obrada.txt"
+#define STATUS_DAT "status.txt"
 
-int current_number = 1;
+int trenutni_broj = 1;
 
 void handle_sigusr1(int sig) {
-    printf("Trenutni broj koji se koristi u obradi: %d\n", current_number);
+    printf("Trenutni broj koji se koristi u obradi: %d\n", trenutni_broj);
 }
 
 void handle_sigterm(int sig) {
-    FILE *status_file = fopen(STATUS_FILE, "w");
+    FILE *status_file = fopen(STATUS_DAT, "w");
     if (status_file == NULL) {
         perror("Otvaranje status.txt");
         exit(1);
     }
-    fprintf(status_file, "%d\n", current_number);
+    fprintf(status_file, "%d\n", trenutni_broj);
     fclose(status_file);
-    printf("Zatvaranje programa, trenutni broj je: %d\n", current_number);
+    printf("Zatvaranje programa, trenutni broj je: %d\n", trenutni_broj);
     exit(0);
 }
 
 void handle_sigint(int sig) {
-    FILE *status_file = fopen(STATUS_FILE, "w");
+    FILE *status_file = fopen(STATUS_DAT, "w");
     if (status_file == NULL) {
         perror("Otvaranje status.txt");
         exit(1);
@@ -37,21 +37,18 @@ void handle_sigint(int sig) {
     exit(0);
 }
 
-// Funkcija koja učitava zadnji broj iz obrada.txt
-int load_last_processed_from_obrada() {
-    FILE *obrada_file = fopen(OBRADA_FILE, "r");
+int zadnji_broj_obrada() {
+    FILE *obrada_file = fopen(OBRADA_DAT, "r");
     if (obrada_file == NULL) {
-        return 0;  // Ako nije moguće otvoriti, vraća 0
+        return 0; 
     }
-
-    int last_processed = 0;
-    int num;
-    // Čitaj sve brojeve i zadrži zadnji
-    while (fscanf(obrada_file, "%d", &num) != EOF) {
-        last_processed = num;
+    int zadnji = 0;
+    int broj;
+    while (fscanf(obrada_file, "%d", &broj) != EOF) {
+        zadnji = broj;
     }
     fclose(obrada_file);
-    return last_processed;
+    return zadnji;
 }
 
 int main() {
@@ -59,39 +56,36 @@ int main() {
     signal(SIGTERM, handle_sigterm);
     signal(SIGINT, handle_sigint);
 
-    // Prvo učitaj zadnji broj iz obrada.txt
-    int last_processed = load_last_processed_from_obrada();
-    
-    // Ako postoji zadnji broj, nastavi s brojem + 1, inače počni od 1
-    if (last_processed > 0) {
-        current_number = (int)sqrt(last_processed) + 1;  // Koristi kvadratni korijen i dodaj 1
+    int zadnji = zadnji_broj_obrada();
+
+    if (zadnji > 0) {
+        trenutni_broj = (int)sqrt(zadnji) + 1;  
     } else {
-        current_number = 1;
+        trenutni_broj = 1;
     }
 
     while (1) {
-        FILE *status_file = fopen(STATUS_FILE, "w");
+        FILE *status_file = fopen(STATUS_DAT, "w");
         if (status_file == NULL) {
             perror("Otvaranje status.txt");
             return 1;
         }
-        fprintf(status_file, "0\n"); // Postavlja status na 0
+        fprintf(status_file, "0\n"); 
         fclose(status_file);
 
-        FILE *obrada_file = fopen(OBRADA_FILE, "a");
+        FILE *obrada_file = fopen(OBRADA_DAT, "a");
         if (obrada_file == NULL) {
             perror("Otvaranje obrada.txt");
             return 1;
         }
 
-        fprintf(obrada_file, "%d\n", current_number * current_number);  // Piši kvadrat trenutnog broja
+        fprintf(obrada_file, "%d\n", trenutni_broj * trenutni_broj);  
         fclose(obrada_file);
 
-        printf("Kvadrat broja %d upisan u obrada.txt\n", current_number);
+        printf("Kvadrat broja %d upisan u obrada.txt\n", trenutni_broj);
+        trenutni_broj++;  
 
-        current_number++;  // Povećaj broj za 1
-
-        sleep(5);  // Uspori izvođenje
+        sleep(5);  
     }
     
     return 0;
